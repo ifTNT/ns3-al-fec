@@ -4,17 +4,17 @@
 
 #include "ns3/al-fec-header.h"
 
-namespace ns3 {
+namespace ns3::AlFecHeader {
 
 NS_LOG_COMPONENT_DEFINE ("AlFecHeader");
 
-NS_OBJECT_ENSURE_REGISTERED (AlFecHeader);
+NS_OBJECT_ENSURE_REGISTERED (EncodeHeader);
 
-AlFecHeader::AlFecHeader () : m_esi (0), m_k (0) //, m_sn (0)
+EncodeHeader::EncodeHeader () : m_esi (0), m_k (0) //, m_sn (0)
 {
 }
 
-AlFecHeader::~AlFecHeader ()
+EncodeHeader::~EncodeHeader ()
 {
   m_esi = 0;
   m_k = 0;
@@ -22,57 +22,58 @@ AlFecHeader::~AlFecHeader ()
 }
 
 void
-AlFecHeader::SetEncodedSymbolId (uint8_t esi)
+EncodeHeader::SetEncodedSymbolId (uint8_t esi)
 {
   m_esi = esi;
 }
 
-void
-AlFecHeader::SetK (uint8_t k)
-{
-  m_k = k;
-}
-
-// void
-// AlFecHeader::SetSequenceNumber (uint16_t sn)
-// {
-//   m_sn = sn;
-// }
-
 uint8_t
-AlFecHeader::GetEncodedSymbolId () const
+EncodeHeader::GetEncodedSymbolId () const
 {
   return m_esi;
 }
 
+void
+EncodeHeader::SetK (uint8_t k)
+{
+  m_k = k;
+}
+
 uint8_t
-AlFecHeader::GetK () const
+EncodeHeader::GetK () const
 {
   return m_k;
 }
 
+// void
+// PayloadHeader::SetSequenceNumber (uint16_t sn)
+// {
+//   m_sn = sn;
+// }
+
 // uint16_t
-// AlFecHeader::GetSequenceNumber () const
+// PayloadHeader::GetSequenceNumber () const
 // {
 //   return m_sn;
 // }
 
 TypeId
-AlFecHeader::GetTypeId (void)
+EncodeHeader::GetTypeId (void)
 {
-  static TypeId tid =
-      TypeId ("ns3::AlFecHeader").SetParent<Header> ().AddConstructor<AlFecHeader> ();
+  static TypeId tid = TypeId ("ns3::AlFecHeader::EncodeHeader")
+                          .SetParent<Header> ()
+                          .AddConstructor<EncodeHeader> ();
   return tid;
 }
 
 TypeId
-AlFecHeader::GetInstanceTypeId (void) const
+EncodeHeader::GetInstanceTypeId (void) const
 {
   return GetTypeId ();
 }
 
 void
-AlFecHeader::Print (std::ostream &os) const
+EncodeHeader::Print (std::ostream &os) const
 {
   // os << "SN=" << (int) m_sn;
   os << "K=" << (int) m_k;
@@ -80,13 +81,13 @@ AlFecHeader::Print (std::ostream &os) const
 }
 
 uint32_t
-AlFecHeader::GetSerializedSize (void) const
+EncodeHeader::GetSerializedSize (void) const
 {
-  return 4;
+  return sizeof(m_k)+sizeof(m_esi);
 }
 
 void
-AlFecHeader::Serialize (Buffer::Iterator start) const
+EncodeHeader::Serialize (Buffer::Iterator start) const
 {
   Buffer::Iterator i = start;
 
@@ -96,7 +97,7 @@ AlFecHeader::Serialize (Buffer::Iterator start) const
 }
 
 uint32_t
-AlFecHeader::Deserialize (Buffer::Iterator start)
+EncodeHeader::Deserialize (Buffer::Iterator start)
 {
   Buffer::Iterator i = start;
 
@@ -107,4 +108,76 @@ AlFecHeader::Deserialize (Buffer::Iterator start)
   return GetSerializedSize ();
 }
 
-}; // namespace ns3
+/*=======================*
+ *     PayloadHeader     *
+ *=======================*/
+
+NS_OBJECT_ENSURE_REGISTERED (PayloadHeader);
+
+PayloadHeader::PayloadHeader () : m_size (0)
+{
+}
+
+PayloadHeader::~PayloadHeader ()
+{
+  m_size = 0;
+}
+
+void
+PayloadHeader::SetSize (uint16_t size)
+{
+  m_size = size;
+}
+
+uint16_t
+PayloadHeader::GetSize () const
+{
+  return m_size;
+}
+
+TypeId
+PayloadHeader::GetTypeId (void)
+{
+  static TypeId tid = TypeId ("ns3::AlFecHeader::PayloadHeader")
+                          .SetParent<Header> ()
+                          .AddConstructor<PayloadHeader> ();
+  return tid;
+}
+
+TypeId
+PayloadHeader::GetInstanceTypeId (void) const
+{
+  return GetTypeId ();
+}
+
+void
+PayloadHeader::Print (std::ostream &os) const
+{
+  os << "Size=" << (int) m_size;
+}
+
+uint32_t
+PayloadHeader::GetSerializedSize (void) const
+{
+  return sizeof(m_size);
+}
+
+void
+PayloadHeader::Serialize (Buffer::Iterator start) const
+{
+  Buffer::Iterator i = start;
+
+  i.WriteHtonU16 (m_size);
+}
+
+uint32_t
+PayloadHeader::Deserialize (Buffer::Iterator start)
+{
+  Buffer::Iterator i = start;
+
+  m_size = i.ReadNtohU16 ();
+
+  return GetSerializedSize ();
+}
+
+}; // namespace ns3::AlFecHeader

@@ -26,7 +26,7 @@ public:
   /**
    * \brief Specify the source block
   */
-  void SetSourceBlock (Packet p);
+  void SetSourceBlock (Ptr<Packet> p);
 
   /**
    * \brief Get the next encoded symbol
@@ -34,7 +34,7 @@ public:
    * \return If there's unsent encoded symbol, return the packet with encode header.
    * Other, return std::nullopt
   */
-  std::optional<Packet> NextEncodedSymbol ();
+  std::optional<Ptr<Packet>> NextEncodedSymbol ();
 
   /**
    * \brief Decode source block with received symbol
@@ -42,7 +42,7 @@ public:
    * \return If the source block successfully decoded, return the decoded block.
    * Other, return std::nullopt
   */
-  std::optional<Packet> Decode (Packet p);
+  std::optional<Ptr<Packet>> Decode (Ptr<Packet> p);
 
 private:
   // Common
@@ -50,9 +50,9 @@ private:
   of_rs_2_m_parameters_t m_param;
   uint16_t m_rsM = 8; // RS over GF(2^m). For configuration.
   uint32_t m_symbolSize = 8; // The symbol size. For configuration.
-  double m_codeRate = 1.0; // Code rate. For configuration.
+  double m_codeRate = 0.5; // Code rate. For configuration.
   const of_codec_id_t m_codecId = OF_CODEC_REED_SOLOMON_GF_2_M_STABLE;
-  uint8_t *m_sourceBlock;
+  Ptr<Packet> m_sourcePacket;
   const int m_sizeOfLenField = sizeof (unsigned int);
 
   // Encode

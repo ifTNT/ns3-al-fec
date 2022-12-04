@@ -23,7 +23,7 @@ public:
   virtual ~OpenfecRsEncodeTestCase ();
   const unsigned int symbolSize = 16;
   const double codeRate = 0.25;
-  const int packetSize = 1000;
+  const int payloadSize = 1000;
 
 private:
   virtual void DoRun (void);
@@ -40,7 +40,7 @@ public:
   virtual ~OpenfecRsDecodeTestCase ();
   const int symbolSize = 16;
   const double codeRate = 0.5;
-  const int packetSize = 1000;
+  const int payloadSize = 1000;
 
 private:
   virtual void DoRun (void);
