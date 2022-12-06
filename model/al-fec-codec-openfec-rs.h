@@ -25,24 +25,30 @@ public:
 
   /**
    * \brief Specify the source block
+   * 
+   * \return {The number of encoded block (n), the number of source block (k)}
   */
-  void SetSourceBlock (Ptr<Packet> p);
+  std::pair<size_t, size_t> SetSourceBlock (Buffer p);
+
 
   /**
    * \brief Get the next encoded symbol
    * 
-   * \return If there's unsent encoded symbol, return the packet with encode header.
-   * Other, return std::nullopt
+   * \return Return the next unsent encoded block.
+   * If there's no unsent encoded block, return std::nullopt
   */
-  std::optional<Ptr<Packet>> NextEncodedSymbol ();
+  std::optional<std::pair<unsigned int, Buffer>> NextEncodedBlock ();
 
   /**
-   * \brief Decode source block with received symbol
+   * \brief Decode source block with received block
+   * 
+   * \param p The content of received block
+   * \param esi The received Encoded Symbol ID
    * 
    * \return If the source block successfully decoded, return the decoded block.
    * Other, return std::nullopt
   */
-  std::optional<Ptr<Packet>> Decode (Ptr<Packet> p);
+  std::optional<Buffer> Decode (Buffer p, unsigned int esi);
 
 private:
   // Common
@@ -52,7 +58,7 @@ private:
   uint32_t m_symbolSize = 8; // The symbol size. For configuration.
   double m_codeRate = 0.5; // Code rate. For configuration.
   const of_codec_id_t m_codecId = OF_CODEC_REED_SOLOMON_GF_2_M_STABLE;
-  Ptr<Packet> m_sourcePacket;
+  std::optional<Buffer> m_sourceBlock;
   const int m_sizeOfLenField = sizeof (unsigned int);
 
   // Encode
