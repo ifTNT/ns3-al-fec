@@ -10,14 +10,13 @@ NS_LOG_COMPONENT_DEFINE ("AlFecHeader");
 
 NS_OBJECT_ENSURE_REGISTERED (EncodeHeader);
 
-EncodeHeader::EncodeHeader () : m_esi (0), m_k (0) //, m_sn (0)
+EncodeHeader::EncodeHeader () : m_esi (0) //, m_sn (0)
 {
 }
 
 EncodeHeader::~EncodeHeader ()
 {
   m_esi = 0;
-  m_k = 0;
   // m_sn = 0;
 }
 
@@ -31,18 +30,6 @@ uint8_t
 EncodeHeader::GetEncodedSymbolId () const
 {
   return m_esi;
-}
-
-void
-EncodeHeader::SetK (uint8_t k)
-{
-  m_k = k;
-}
-
-uint8_t
-EncodeHeader::GetK () const
-{
-  return m_k;
 }
 
 // void
@@ -76,14 +63,14 @@ void
 EncodeHeader::Print (std::ostream &os) const
 {
   // os << "SN=" << (int) m_sn;
-  os << "K=" << (int) m_k;
+
   os << " ESI=" << (int) m_esi;
 }
 
 uint32_t
 EncodeHeader::GetSerializedSize (void) const
 {
-  return sizeof(m_k)+sizeof(m_esi);
+  return sizeof(m_esi); //+ sizeof(m_sn)
 }
 
 void
@@ -92,8 +79,7 @@ EncodeHeader::Serialize (Buffer::Iterator start) const
   Buffer::Iterator i = start;
 
   // i.WriteHtonU16 (m_sn);
-  i.WriteU8 (m_k);
-  i.WriteU8 (m_esi);
+  i.WriteHtonU16 (m_esi);
 }
 
 uint32_t
@@ -102,8 +88,7 @@ EncodeHeader::Deserialize (Buffer::Iterator start)
   Buffer::Iterator i = start;
 
   // m_sn = i.ReadNtohU16 ();
-  m_k = i.ReadU8 ();
-  m_esi = i.ReadU8 ();
+  m_esi = i.ReadNtohU16 ();
 
   return GetSerializedSize ();
 }
@@ -114,25 +99,25 @@ EncodeHeader::Deserialize (Buffer::Iterator start)
 
 NS_OBJECT_ENSURE_REGISTERED (PayloadHeader);
 
-PayloadHeader::PayloadHeader () : m_size (0)
+PayloadHeader::PayloadHeader () : m_paddingSize (0)
 {
 }
 
 PayloadHeader::~PayloadHeader ()
 {
-  m_size = 0;
+  m_paddingSize = 0;
 }
 
 void
-PayloadHeader::SetSize (uint16_t size)
+PayloadHeader::SetPaddingSize (uint8_t size)
 {
-  m_size = size;
+  m_paddingSize = size;
 }
 
-uint16_t
-PayloadHeader::GetSize () const
+uint8_t
+PayloadHeader::GetPaddingSize () const
 {
-  return m_size;
+  return m_paddingSize;
 }
 
 TypeId
@@ -153,13 +138,13 @@ PayloadHeader::GetInstanceTypeId (void) const
 void
 PayloadHeader::Print (std::ostream &os) const
 {
-  os << "Size=" << (int) m_size;
+  os << "Size=" << (int) m_paddingSize;
 }
 
 uint32_t
 PayloadHeader::GetSerializedSize (void) const
 {
-  return sizeof(m_size);
+  return sizeof(m_paddingSize);
 }
 
 void
@@ -167,7 +152,7 @@ PayloadHeader::Serialize (Buffer::Iterator start) const
 {
   Buffer::Iterator i = start;
 
-  i.WriteHtonU16 (m_size);
+  i.WriteU8 (m_paddingSize);
 }
 
 uint32_t
@@ -175,7 +160,7 @@ PayloadHeader::Deserialize (Buffer::Iterator start)
 {
   Buffer::Iterator i = start;
 
-  m_size = i.ReadNtohU16 ();
+  m_paddingSize = i.ReadU8 ();
 
   return GetSerializedSize ();
 }

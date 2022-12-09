@@ -5,7 +5,6 @@
 #include <optional>
 #include <cmath>
 #include <algorithm>
-#include <arpa/inet.h>
 
 extern "C" {
 #include "openfec/lib_common/of_openfec_api.h"
@@ -158,7 +157,7 @@ AlFecCodecOpenfecRs::Decode (Buffer p, unsigned int esi)
   int ret;
   uint8_t *buf;
 
-  NS_LOG_INFO ("Decode with block esi=" << esi);
+  NS_LOG_LOGIC ("Decode with block esi=" << esi);
 
   // The source packet has already decoded, there's no need to decode again.
   if (m_sourceBlock)

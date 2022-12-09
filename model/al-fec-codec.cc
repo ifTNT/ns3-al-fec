@@ -15,6 +15,14 @@ AlFecCodec::SetK (size_t k)
   NS_ASSERT_MSG (k > 0, "K must greater than 0");
   m_k = k;
 }
+
+void
+AlFecCodec::SetSymbolSize (size_t symbolSize)
+{
+  NS_ASSERT_MSG (symbolSize > 0, "SymbolSize must greater than 0");
+  m_symbolSize = symbolSize;
+}
+
 size_t
 AlFecCodec::GetN ()
 {
@@ -24,5 +32,10 @@ size_t
 AlFecCodec::GetK ()
 {
   return m_k;
+}
+size_t
+AlFecCodec::GetSymbolSize ()
+{
+  return m_symbolSize;
 }
 } // namespace ns3

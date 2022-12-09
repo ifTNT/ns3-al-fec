@@ -46,12 +46,15 @@ public:
 
   void SetN (size_t n);
   void SetK (size_t k);
+  void SetSymbolSize (size_t symbolSize);
   size_t GetN ();
   size_t GetK ();
+  size_t GetSymbolSize ();
 
 protected:
   size_t m_n = 0; // Number of encoded blocks
   size_t m_k = 0; // Number of source blocks
+  size_t m_symbolSize = 8; // The symbol size. For configuration.
 };
 
 } // namespace ns3

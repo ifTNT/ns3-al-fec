@@ -24,12 +24,6 @@ public:
    * \param esi ESI to set
    */
   void SetEncodedSymbolId (uint8_t esi);
-  /**
-   * \brief Set the number of source symbol
-   *
-   * \param k The number of source symbol
-   */
-  void SetK (uint8_t k);
 
   /**
    * \brief Set Sequence Number
@@ -44,12 +38,6 @@ public:
    * \returns ESI
    */
   uint8_t GetEncodedSymbolId () const;
-  /**
-   * \brief Get the number of source symbol
-   *
-   * \returns The number of source symbol
-   */
-  uint8_t GetK () const;
 
   /**
    * \brief Get the Sequence Number of source block
@@ -70,8 +58,8 @@ public:
   virtual uint32_t Deserialize (Buffer::Iterator start);
 
 private:
-  uint8_t m_esi; // Encoded symbol id
-  uint8_t m_k; // Number of the source symbol
+  uint16_t m_esi; // Encoded symbol id
+  // uint16_t m_k; // Number of the source symbol
   // uint16_t m_sn; // Sequence number of source packet
 };
 
@@ -87,18 +75,18 @@ public:
   ~PayloadHeader ();
 
   /**
-   * \brief Set original packet size
+   * \brief Set the size of source packet padding
    *
-   * \param size original packet size to set
+   * \param size the size of source packet padding to set
    */
-  void SetSize (uint16_t size);
+  void SetPaddingSize (uint8_t paddingSize);
 
   /**
-   * \brief Get the original size of source packet
+   * \brief Get the size of source packet padding
    *
-   * \returns The original size of source packet
+   * \returns The the size of source packet padding
    */
-  uint16_t GetSize () const;
+  uint8_t GetPaddingSize () const;
 
   /**
    * \brief Get the type ID.
@@ -112,7 +100,7 @@ public:
   virtual uint32_t Deserialize (Buffer::Iterator start);
 
 private:
-  uint16_t m_size; // Original size of source packet
+  uint8_t m_paddingSize; // The size of source packet padding
 };
 
 } // namespace ns3::AlFecHeader

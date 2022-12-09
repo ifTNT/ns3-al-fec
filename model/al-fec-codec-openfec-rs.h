@@ -55,7 +55,6 @@ private:
   of_session_t *m_session;
   of_rs_2_m_parameters_t m_param;
   uint16_t m_rsM = 8; // RS over GF(2^m). For configuration.
-  uint32_t m_symbolSize = 8; // The symbol size. For configuration.
   double m_codeRate = 0.5; // Code rate. For configuration.
   const of_codec_id_t m_codecId = OF_CODEC_REED_SOLOMON_GF_2_M_STABLE;
   std::optional<Buffer> m_sourceBlock;
