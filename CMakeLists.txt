@@ -12,6 +12,7 @@ build_lib(
                  model/al-fec-header.cc
                  model/al-fec-codec-openfec-rs.cc
                  model/al-fec-info-tag.cc
+                 model/util.cc
     HEADER_FILES model/al-fec.h
                  model/al-fec-codec.h
                  model/al-fec-header.h
@@ -21,5 +22,6 @@ build_lib(
                       ${openfec}
     TEST_SOURCES test/al-fec-test-codec-openfec-rs.cc
                  test/al-fec-test-packet.cc
+                 model/util.cc
 )
     

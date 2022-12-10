@@ -41,15 +41,21 @@ public:
    */
   uint16_t GetK () const;
 
-  void SetSymbolSize(uint8_t symbolSize);
+  void SetSymbolSize (uint8_t symbolSize);
   uint8_t GetSymbolSize () const;
-
 
 private:
   uint16_t m_k; // Number of the source symbol
   uint8_t m_symbolSize; // Symbol size
   Buffer m_packetContext;
 };
+
+inline std::ostream &
+operator<< (std::ostream &os, AlFecInfoTag const &v)
+{
+  v.Print (os);
+  return os;
+}
 
 } // namespace ns3
 

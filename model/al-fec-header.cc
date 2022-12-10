@@ -64,7 +64,7 @@ EncodeHeader::Print (std::ostream &os) const
 {
   // os << "SN=" << (int) m_sn;
 
-  os << " ESI=" << (int) m_esi;
+  os << "ESI=" << (int) m_esi;
 }
 
 uint32_t
@@ -138,7 +138,7 @@ PayloadHeader::GetInstanceTypeId (void) const
 void
 PayloadHeader::Print (std::ostream &os) const
 {
-  os << "Size=" << (int) m_paddingSize;
+  os << "PaddingSize=" << (int) m_paddingSize;
 }
 
 uint32_t

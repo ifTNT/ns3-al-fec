@@ -44,10 +44,10 @@ AlFecCodecOpenfecRs::GetTypeId (void)
           .AddAttribute ("m", "Reed-Solomon over GF(2^m)", UintegerValue (8),
                          MakeUintegerAccessor (&AlFecCodecOpenfecRs::m_rsM),
                          MakeUintegerChecker<uint16_t> ())
-          .AddAttribute ("symbolSize", "The symbol size in bytes", UintegerValue (8),
+          .AddAttribute ("symbolSize", "The symbol size in bytes", UintegerValue (16),
                          MakeUintegerAccessor (&AlFecCodecOpenfecRs::m_symbolSize),
                          MakeUintegerChecker<uint32_t> ())
-          .AddAttribute ("codeRate", "k/n", DoubleValue (1.0),
+          .AddAttribute ("codeRate", "k/n", DoubleValue (0.5),
                          MakeDoubleAccessor (&AlFecCodecOpenfecRs::m_codeRate),
                          MakeDoubleChecker<double> (0.1, 1.0));
   return tid;

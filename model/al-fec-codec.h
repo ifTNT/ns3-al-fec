@@ -54,7 +54,7 @@ public:
 protected:
   size_t m_n = 0; // Number of encoded blocks
   size_t m_k = 0; // Number of source blocks
-  size_t m_symbolSize = 8; // The symbol size. For configuration.
+  size_t m_symbolSize = 16; // The symbol size. For configuration.
 };
 
 } // namespace ns3

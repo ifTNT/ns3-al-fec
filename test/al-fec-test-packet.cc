@@ -9,6 +9,7 @@
 #include "ns3/al-fec.h"
 #include "ns3/al-fec-codec-openfec-rs.h"
 #include "ns3/al-fec-header.h"
+#include "../model/util.h"
 
 #include "ns3/icmpv4.h"
 
@@ -22,10 +23,6 @@
 using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE ("AlFecPacketTest");
-
-void fillRandomBytes (uint8_t *buf, unsigned int size);
-
-void printBuffer (uint8_t *buf, unsigned int size);
 
 class DummyCodec : public Object, public AlFecCodec
 {
@@ -166,8 +163,8 @@ EncapsulateTestCase::DoRun (void)
       cntPacket++;
       (*encodedPacket)->CopyData (buf, (*encodedPacket)->GetSize ());
       NS_LOG_INFO (**encodedPacket);
-      (*encodedPacket)->PrintPacketTags (std::cout);
-      printBuffer (buf, (*encodedPacket)->GetSize ());
+      (*encodedPacket)->PrintPacketTags (std::clog);
+      NS_LOG_INFO ("Content\n" << printBuffer (buf, (*encodedPacket)->GetSize ()));
     }
   NS_TEST_ASSERT_MSG_EQ (cntPacket, n, "Total symbols mismatch");
   free (buf);
@@ -204,7 +201,7 @@ InterpretationTestCase::DoRun (void)
   Ptr<Packet> originalPacket;
   fillRandomBytes (buf, payloadSize);
 
-  printBuffer (buf, payloadSize);
+  NS_LOG_INFO ("Original payload:\n" << printBuffer (buf, payloadSize));
 
   originalPacket = Create<Packet> (buf, payloadSize);
   delete[] buf;
@@ -249,10 +246,10 @@ InterpretationTestCase::DoRun (void)
   uint8_t *rxBuf = new uint8_t[serializedSize];
   (*decodedPacket)->Serialize (rxBuf, serializedSize);
 
-  NS_LOG_INFO ("Original packet: " << *originalPacket);
-  printBuffer (txBuf, serializedSize);
-  NS_LOG_INFO ("Decoded packet: " << **decodedPacket);
-  printBuffer (rxBuf, serializedSize);
+  NS_LOG_INFO ("Original packet: " << *originalPacket << "\n"
+                                   << printBuffer (txBuf, serializedSize));
+  NS_LOG_INFO ("Decoded packet: " << **decodedPacket << "\n"
+                                  << printBuffer (rxBuf, serializedSize));
   NS_TEST_ASSERT_MSG_EQ (rcvdHeader.GetIdentifier (), testHeader.GetIdentifier (),
                          "Header mismatch");
   NS_TEST_ASSERT_MSG_EQ (rcvdHeader.GetSequenceNumber (), testHeader.GetSequenceNumber (),

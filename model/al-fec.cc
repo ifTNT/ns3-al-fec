@@ -4,6 +4,7 @@
 #include "ns3/type-id.h"
 
 #include "al-fec-info-tag.h"
+#include "util.h"
 
 #include <optional>
 #include <cmath>
@@ -17,20 +18,6 @@
 namespace ns3 {
 NS_LOG_COMPONENT_DEFINE ("AlFec");
 NS_OBJECT_ENSURE_REGISTERED (AlFec);
-
-std::string
-printBuffer (uint8_t *buf, unsigned int size)
-{
-  std::stringstream ss;
-  for (unsigned int i = 0; i < size; i++)
-    {
-      ss << std::setfill ('0') << std::setw (2) << std::right << std::hex << *(buf + i) << " ";
-    }
-  ss << std::endl;
-  std::string ret;
-  ss >> ret;
-  return ret;
-}
 
 AlFec::AlFec () : m_originalPacket (Ptr<Packet> ()), m_codec (nullptr)
 {
@@ -88,7 +75,6 @@ AlFec::EncodePacket (Ptr<Packet> originalPacket)
   size_t packetSize = m_originalPacket->GetSize () + payloadHeader.GetSerializedSize ();
   size_t paddingSize = (symbolSize - (packetSize % symbolSize)) % symbolSize;
   encodingPacket->AddPaddingAtEnd (paddingSize);
-  NS_LOG_INFO ("Padding size=" << paddingSize);
 
   // Payload header should be append to the encoding content
   payloadHeader.SetPaddingSize (paddingSize);
@@ -100,7 +86,7 @@ AlFec::EncodePacket (Ptr<Packet> originalPacket)
   const uint8_t *p = serializeBuf;
   encodingPacket->Serialize (serializeBuf, serializedSize);
 
-  NS_LOG_INFO ("Source packet" << *encodingPacket << "\n"
+  NS_LOG_INFO ("Source packet: " << *encodingPacket << "\n"
                                << printBuffer (serializeBuf, serializedSize));
 
   // Retrieve the context and content through serialization
@@ -151,7 +137,6 @@ AlFec::NextEncodedPacket ()
     }
   esi = encodedBlock->first;
   content = encodedBlock->second;
-  NS_LOG_LOGIC ("New encoded block ESI=" << esi << ", size=" << content.GetSize ());
 
   buf = new uint8_t[content.GetSize ()];
   content.CopyData (buf, content.GetSize ());
@@ -168,6 +153,8 @@ AlFec::NextEncodedPacket ()
   encodeTag.SetSymbolSize (m_codec->GetSymbolSize ());
   p->AddPacketTag (encodeTag);
 
+  NS_LOG_LOGIC ("New encoded block " << encodeHeader << "; " << encodeTag);
+
   return p;
 }
 
@@ -183,7 +170,7 @@ AlFec::DecodePacket (Ptr<Packet> p)
   p->RemoveHeader (encodeHeader);
   p->RemovePacketTag (encodeTag);
 
-  NS_LOG_LOGIC ("Decode with symbol " << encodeHeader);
+  NS_LOG_LOGIC ("Decode with block " << encodeHeader << "; " << encodeTag);
 
   // The source packet has already decoded, there's no need to decode again.
   if (m_originalPacket)
