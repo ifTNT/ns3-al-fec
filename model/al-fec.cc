@@ -151,7 +151,7 @@ AlFec::NextEncodedPacket ()
   encodeTag.SetPacketContext (m_sourceContext);
   encodeTag.SetK (m_codec->GetK ());
   encodeTag.SetSymbolSize (m_codec->GetSymbolSize ());
-  p->AddPacketTag (encodeTag);
+  p->AddByteTag (encodeTag);
 
   NS_LOG_LOGIC ("New encoded block " << encodeHeader << "; " << encodeTag);
 
@@ -168,7 +168,7 @@ AlFec::DecodePacket (Ptr<Packet> p)
   AlFecHeader::EncodeHeader encodeHeader;
   AlFecInfoTag encodeTag;
   p->RemoveHeader (encodeHeader);
-  p->RemovePacketTag (encodeTag);
+  p->FindFirstMatchingByteTag (encodeTag);
 
   NS_LOG_LOGIC ("Decode with block " << encodeHeader << "; " << encodeTag);
 
